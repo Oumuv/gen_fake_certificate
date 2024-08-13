@@ -13,12 +13,16 @@ def generate_id_card(idcard_info):
     year = str(idcard_info.get_birth_year())
     mon = str(idcard_info.get_birth_month())
     day = str(idcard_info.get_birth_day())
-    org = idcard_info.get_province_name() + idcard_info.get_city_name() + '公安局'
-    valid_start = year + '.'
-    valid_start = valid_start + '0' + mon if len(mon) == 1 else valid_start + mon
-    valid_start = valid_start + '.0' + day if len(day) == 1 else valid_start + "." + day
-    valid_end = str(int(year) + 50) + valid_start[4:]
-    valid_range = valid_start + '-' + valid_end
+    org = idcard_info.get_county_name() + '公安局'
+    # 计算前后5年的日期
+    now = datetime.now()
+    five_years_before = now - timedelta(days=5*365)
+    five_years_after = now + timedelta(days=5*365)
+
+    valid_start = five_years_before.strftime("%Y.%m")
+    valid_end = five_years_after.strftime("%Y.%m")
+    valid_range = valid_start + '.02' + '-' + valid_end + '.02'
+
     addr = idcard_info.get_addr()
     idn = idcard_info.get_id()
 
@@ -61,8 +65,8 @@ def generate_id_card(idcard_info):
     drawback = ImageDraw.Draw(back)
     output_filename = f"{name}_id_card_back.png"
 
-    drawback.text((220, 249), org, fill=(0, 0, 0), font=other_font)
-    drawback.text((220, 290), valid_range, fill=(0, 0, 0), font=other_font)
+    drawback.text((220, 249), org, fill=(0, 0, 0), font=bdate_font)
+    drawback.text((220, 290), valid_range, fill=(0, 0, 0), font=bdate_font)
     back.save(idcard_save_dir + output_filename)
 
 
@@ -70,11 +74,12 @@ if __name__ == "__main__":
     random_sex = random.randint(0, 1)  # 随机生成男(1)或女(0)
     areaCode = "440101"
     id = generate_id(areaCode, random_sex)
-    provinceName = "广东省"
+    provinceName = "广东"
     cityName = "广州市"
-    addr = provinceName + cityName + "天河区园丁路41号"
-    name = "张三"
+    countyName = "天河区"
+    addr = provinceName + cityName + countyName + "园丁路41号"
+    name = "李四"
     nation = "汉"
-    idcard = IDCard(name, nation, addr, id, provinceName, cityName)
+    idcard = IDCard(name, nation, addr, id, provinceName, cityName, countyName)
 
     generate_id_card(idcard)

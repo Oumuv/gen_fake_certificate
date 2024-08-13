@@ -35,7 +35,7 @@ def generate_id(area_code,gender=0):
     # 随机生成一个区域码(6位数)
     id_number = area_code
     # 限定出生日期范围(8位数)
-    start, end = datetime.strptime("1960-01-01", "%Y-%m-%d"), datetime.strptime("2000-12-30", "%Y-%m-%d")
+    start, end = datetime.strptime("1980-01-01", "%Y-%m-%d"), datetime.strptime("2000-12-30", "%Y-%m-%d")
     birth_days = datetime.strftime(start + timedelta(random.randint(0, (end - start).days + 1)), "%Y%m%d")
     id_number += str(birth_days)
     # 顺序码(2位数)
@@ -47,7 +47,7 @@ def generate_id(area_code,gender=0):
 
 class IDCard:
 
-    def __init__(self,name,nation,addr,id_number,province_name,city_name):
+    def __init__(self,name,nation,addr,id_number,province_name,city_name,county_name):
         super(IDCard, self).__init__()
         self.__id = id_number
         self.__area_id = int(self.__id[0:6])
@@ -59,6 +59,7 @@ class IDCard:
         self.__nation = nation
         self.__province_name = province_name
         self.__city_name = city_name
+        self.__county_name = county_name
 
     def get_id(self):
         return self.__id
@@ -90,6 +91,9 @@ class IDCard:
 
     def get_city_name(self):
         return self.__city_name
+
+    def get_county_name(self):
+        return self.__county_name
 
 
 
